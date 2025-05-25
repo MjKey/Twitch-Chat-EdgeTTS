@@ -1,0 +1,400 @@
+:root {
+    /* Refined Dark Palette */
+    --primary-color: #6a4caf;
+    /* Softer purple */
+    --secondary-color: #8e6acb;
+    /* Lighter accent */
+    --text-color: #e0e0e0;
+    /* Lighter text for contrast */
+    --background-color: #121212;
+    /* Deeper dark background */
+    --card-background: #1e1e1e;
+    /* Slightly lighter card background */
+    --border-color: #333333;
+    /* Subtle borders */
+    --input-background: #252525;
+    /* Darker input background */
+    --placeholder-color: #a0a0a0;
+    /* Lighter placeholder text */
+    --scrollbar-thumb: #555;
+    --scrollbar-track: #2b2b2b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    height: 100vh;
+    overflow: hidden;
+    /* Control overflow at the body level */
+    padding: 20px;
+    /* Add padding to the body instead of the container */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    /* Remove padding from container as it's now on body */
+    height: 100%;
+    /* Take full height available */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-background);
+    /* Apply card background to container */
+    border-radius: 8px;
+    /* Slightly rounded corners for the main container */
+    overflow: hidden;
+    /* Hide overflow for rounded corners */
+}
+
+.header {
+    padding: 15px 20px;
+    /* Add horizontal padding */
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0;
+    /* Remove bottom margin */
+    text-align: center;
+    background-color: #1a1a1a;
+    /* Slightly different header background */
+    color: var(--secondary-color);
+    /* Use accent color for header text */
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.settings-panel {
+    background-color: var(--card-background);
+    /* Already set on container, but good to be explicit */
+    /* Removed border - using container border */
+    border-radius: 0;
+    /* No border radius here, container handles it */
+    padding: 20px;
+    /* Increased padding */
+    margin-bottom: 0;
+    /* Remove bottom margin */
+}
+
+.settings-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+    /* Increased margin */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    /* Increased padding */
+    color: var(--text-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    /* Increased margin */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    /* Increased margin */
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    /* Adjusted padding */
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    /* Subtle border radius */
+    background-color: var(--input-background);
+    color: var(--text-color);
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(106, 76, 175, 0.3);
+    /* Subtle focus ring */
+}
+
+input[type="text"]::placeholder {
+    color: var(--placeholder-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    /* Adjusted padding */
+    border-radius: 4px;
+    /* Subtle border radius */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    /* Make button full width in settings */
+    margin-top: 10px;
+    /* Add some space above the button */
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+button:disabled {
+    background-color: #3a3a3a;
+    /* Darker disabled color */
+    color: #b0b0b0;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: var(--primary-color);
+    /* Style checkbox */
+}
+
+
+/* Стили для ползунка громкости */
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: var(--input-background);
+    outline: none;
+    margin: 10px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover,
+input[type="range"]::-moz-range-thumb:hover {
+    background: var(--secondary-color);
+}
+
+input[type="range"]:focus {
+    box-shadow: 0 0 0 3px rgba(106, 76, 175, 0.3);
+}
+
+.status {
+    padding: 10px;
+    border-radius: 4px;
+    /* Subtle border radius */
+    margin: 15px 20px;
+    /* Add horizontal margin to align with content */
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status.connected {
+    background-color: rgba(67, 181, 129, 0.15);
+    /* Slightly less opaque */
+    border: 1px solid #43b581;
+    color: #43b581;
+}
+
+.status.disconnected {
+    background-color: rgba(240, 71, 71, 0.15);
+    /* Slightly less opaque */
+    border: 1px solid #f04747;
+    color: #f04747;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0 20px 20px 20px;
+    /* Add horizontal margin and bottom margin */
+    border: 1px solid var(--border-color);
+    /* Keep border */
+    border-radius: 4px;
+    /* Subtle border radius */
+    padding: 10px;
+    background-color: #1a1a1a;
+    /* Slightly different background for chat */
+    display: flex;
+    flex-direction: column;
+    /* Stack messages */
+}
+
+.volume-control {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.volume-label {
+    margin-right: 10px;
+}
+
+.volume-slider {
+    width: 200px;
+}
+
+
+/* Custom Scrollbar for Webkit browsers */
+
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 10px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    /* Adjusted padding */
+    margin-bottom: 8px;
+    border-radius: 6px;
+    /* More rounded corners for messages */
+    background-color: #252525;
+    /* Message bubble background */
+    max-width: 95%;
+    /* Prevent messages from touching the edge */
+}
+
+.chat-message:last-child {
+    margin-bottom: 0;
+    /* Remove bottom margin from the last message */
+}
+
+.chat-message .username {
+    font-weight: bold;
+    margin-right: 8px;
+    color: var(--secondary-color);
+    /* Use accent color for usernames */
+}
+
+.chat-message .content {
+    word-break: break-word;
+    color: var(--text-color);
+}
+
+.tts-message {
+    background-color: rgba(106, 76, 175, 0.2);
+    /* Subtle background for TTS messages */
+    border-left: 4px solid var(--primary-color);
+    /* Accent border for TTS */
+    padding-left: 8px;
+    /* Adjust padding due to border */
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        border-radius: 4px;
+    }
+    .header {
+        padding: 10px 15px;
+    }
+    .settings-panel {
+        padding: 15px;
+    }
+    .settings-title {
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    input[type="text"],
+    select,
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+    .status {
+        margin: 10px 15px;
+        font-size: 13px;
+    }
+    .chat-container {
+        margin: 0 15px 15px 15px;
+    }
+    .chat-message {
+        padding: 6px 10px;
+        margin-bottom: 6px;
+    }
+}
+
+
+/* Authorization panel styling */
+
+.auth-panel {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    /* Take up available space */
+}
+
+.auth-panel h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.auth-panel p {
+    margin-bottom: 20px;
+    color: var(--text-color);
+    max-width: 400px;
+    line-height: 1.5;
+}
+
+.auth-panel button {
+    width: auto;
+    /* Allow button to size based on content */
+    padding: 12px 25px;
+}

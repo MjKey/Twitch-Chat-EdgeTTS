@@ -1,0 +1,53 @@
+# Зависимости
+/node_modules
+/.pnp
+.pnp.js
+
+# Сборка
+/dist
+/build
+/out
+/release
+
+# Кэш и логи
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Конфиденциальные данные
+config.json
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Токены авторизации
+twitch_token.json
+
+# Аудио файлы
+*.mp3
+temp*
+
+# Файлы операционной системы
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Файлы редакторов
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Electron
+electron-builder.yml
+/dist_electron 
