@@ -33,7 +33,7 @@ An application for text-to-speech conversion of Twitch chat messages using Micro
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/twitch-chat-tts.git
+   git clone https://github.com/MjKey/Twitch-Chat-TTS.git
    cd twitch-chat-tts
    ```
 
@@ -62,7 +62,7 @@ An application for text-to-speech conversion of Twitch chat messages using Micro
 
 ### For Regular Users (Running the Built Application)
 
-1. Download the latest version of the application from the [Releases](https://github.com/your-username/twitch-chat-tts/releases) section.
+1. Download the latest version of the application from the [Releases](https://github.com/MjKey/Twitch-Chat-TTS/releases) section.
 
 2. Extract the archive to any convenient folder.
 
