@@ -9,6 +9,7 @@ interface ChatMessage {
   timestamp: Date;
   isTTS: boolean;
   isModerator: boolean;
+  isVip: boolean;
 }
 
 // Доступные голоса
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   const [selectedVoice, setSelectedVoice] = useState<string>(VOICE_OPTIONS[0].value);
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const [ttsOnlyModerators, setTtsOnlyModerators] = useState<boolean>(true);
+  const [ttsVipAllowed, setTtsVipAllowed] = useState<boolean>(false);
   const [ttsVolume, setTtsVolume] = useState<number>(50);
   
   // Ссылки
@@ -36,6 +38,7 @@ const App: React.FC = () => {
   const selectedVoiceRef = useRef(selectedVoice);
   const ttsVolumeRef = useRef(ttsVolume);
   const ttsOnlyModeratorsRef = useRef(ttsOnlyModerators);
+  const ttsVipAllowedRef = useRef(ttsVipAllowed);
   
   // Прокрутка чата вниз при появлении новых сообщений
   useEffect(() => {
@@ -105,17 +108,28 @@ const App: React.FC = () => {
         const isTTS = message.startsWith(ttsPrefix);
         // Определяем, является ли пользователь модератором
         const isModerator = !!(tags.mod || (tags.badges && tags.badges.moderator === '1'));
+        // Определяем, является ли пользователь VIP
+        const isVip = !!(tags.badges && tags.badges.vip === '1');
         
         // Добавляем сообщение в список
-        setMessages(prev => [...prev, { id, username, message, timestamp, isTTS, isModerator }]);
+        setMessages(prev => [...prev, { id, username, message, timestamp, isTTS, isModerator, isVip }]);
         
         // Если сообщение начинается с префикса TTS, озвучиваем его
         if (isTTS) {
-          // Если включён фильтр, озвучиваем только модераторов
-          if (ttsOnlyModeratorsRef.current && !isModerator) {
-            console.log('Сообщение пропущено: пользователь не модератор, а опция "только модераторы" включена');
+          // Проверяем разрешения пользователя
+          const canUseTTS = 
+            // Если фильтр модераторов включен и пользователь модератор
+            (ttsOnlyModeratorsRef.current && isModerator) || 
+            // ИЛИ если VIP разрешены и пользователь VIP
+            (ttsOnlyModeratorsRef.current && ttsVipAllowedRef.current && isVip) ||
+            // ИЛИ если фильтр модераторов выключен (разрешено всем)
+            !ttsOnlyModeratorsRef.current;
+          
+          if (!canUseTTS) {
+            console.log(`Сообщение пропущено: пользователь ${username} не имеет прав на TTS (модератор: ${isModerator}, VIP: ${isVip})`);
             return;
           }
+          
           const textToSpeak = message.substring(ttsPrefix.length).trim();
           if (textToSpeak) {
             // Выбираем голос
@@ -126,7 +140,7 @@ const App: React.FC = () => {
               voice = realVoices[Math.floor(Math.random() * realVoices.length)].value;
             }
             
-            console.log(`Отправка сообщения TTS от ${username}${isModerator ? ' (модератор)' : ''} с голосом ${voice} и громкостью ${ttsVolumeRef.current}`);
+            console.log(`Отправка сообщения TTS от ${username}${isModerator ? ' (модератор)' : ''}${isVip ? ' (VIP)' : ''} с голосом ${voice} и громкостью ${ttsVolumeRef.current}`);
             window.electronAPI.speakText(textToSpeak, voice, ttsVolumeRef.current);
           }
         }
@@ -335,6 +349,10 @@ const App: React.FC = () => {
     ttsOnlyModeratorsRef.current = ttsOnlyModerators;
   }, [ttsOnlyModerators]);
   
+  useEffect(() => {
+    ttsVipAllowedRef.current = ttsVipAllowed;
+  }, [ttsVipAllowed]);
+  
   // Тестовая функция для проверки громкости
   const testVolume = () => {
     // Выбираем голос по той же логике, что и в основной функции
@@ -429,7 +447,7 @@ const App: React.FC = () => {
                 </button>
               </div>
 
-              <div className="form-group">
+              <div className="form-group permissions-group">
                 <label style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   <input
                     type="checkbox"
@@ -438,6 +456,17 @@ const App: React.FC = () => {
                   />
                   Озвучивать только сообщения модераторов
                 </label>
+                
+                {ttsOnlyModerators && (
+                  <label style={{display:'flex',alignItems:'center',gap:'8px', marginTop: '8px', marginLeft: '25px'}}>
+                    <input
+                      type="checkbox"
+                      checked={ttsVipAllowed}
+                      onChange={e => setTtsVipAllowed(e.target.checked)}
+                    />
+                    + VIP-пользователи
+                  </label>
+                )}
               </div>
               
               <button type="submit" disabled={isConnecting || !channel.trim()}>

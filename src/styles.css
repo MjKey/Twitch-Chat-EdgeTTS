@@ -170,6 +170,20 @@ input[type="checkbox"] {
 }
 
 
+/* Стили для группы настроек прав доступа */
+
+.permissions-group {
+    background-color: rgba(106, 76, 175, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.permissions-group label {
+    margin-bottom: 0;
+}
+
+
 /* Стили для ползунка громкости */
 
 input[type="range"] {
