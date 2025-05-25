@@ -1,5 +1,7 @@
 # Twitch Chat TTS
 
+### [✦ Readme EN ✦](https://github.com/MjKey/Twitch-Chat-TTS/blob/main/README_EN.md)
+
 Приложение для озвучивания сообщений из чата Twitch с использованием синтеза речи Microsoft Edge TTS.
 
 ## Возможности
