@@ -1,8 +1,8 @@
-# Twitch Chat TTS
+# Twitch Chat TTS (EdgeTTS)
 
-### [✦ Readme EN ✦](https://github.com/MjKey/Twitch-Chat-TTS/blob/main/README_EN.md)
+### [✦ Readme EN ✦](https://github.com/MjKey/Twitch-Chat-EdgeTTS/blob/main/README_EN.md)
 
-### [✦ ПЕРЕД СКАЧИВАНИЕМ ПРОЧИТАЙТЕ ЭТО ✦](https://github.com/MjKey/Twitch-Chat-TTS/#для-обычных-пользователей-запуск-собранного-приложения)
+### [✦ ПЕРЕД СКАЧИВАНИЕМ ПРОЧИТАЙТЕ ЭТО ✦](https://github.com/MjKey/Twitch-Chat-EdgeTTS/#для-обычных-пользователей-запуск-собранного-приложения)
 
 Приложение для озвучивания сообщений из чата Twitch с использованием синтеза речи Microsoft Edge TTS.
 
@@ -37,7 +37,7 @@
 
 1. Клонируйте репозиторий:
    ```
-   git clone https://github.com/MjKey/Twitch-Chat-TTS.git
+   git clone https://github.com/MjKey/Twitch-Chat-EdgeTTS.git
    cd twitch-chat-tts
    ```
 
@@ -66,7 +66,7 @@
 
 ### Для обычных пользователей (запуск собранного приложения)
 
-1. Скачайте последнюю версию приложения из раздела [Releases](https://github.com/MjKey/Twitch-Chat-TTS/releases).
+1. Скачайте последнюю версию приложения из раздела [Releases](https://github.com/MjKey/Twitch-Chat-EdgeTTS/releases).
 
 2. Распакуйте архив в любую удобную папку.
 
