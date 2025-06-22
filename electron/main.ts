@@ -307,24 +307,10 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
   }
 }
 
-// Добавляем в очередь и запускаем обработку
 function enqueueTTS(text: string, voice: string, volume: number) {
   console.log('Новое сообщение для TTS:', { text, voice, volume });
   
-  // Принудительно прерываем текущее воспроизведение и очищаем очередь
-  ttsQueue = []; // Очищаем всю очередь
-  
-  // Если TTS в процессе, отправляем событие audio-played, 
-  // чтобы завершить текущее воспроизведение
-  if (ttsProcessing) {
-    console.log('Прерывание текущего TTS для нового сообщения');
-    ttsProcessing = false;
-    if (mainWindow) {
-      mainWindow.webContents.send('force-stop-audio');
-    }
-  }
-  
-  // Добавляем новое сообщение в очередь
+  // Добавляем новое сообщение в очередь без очистки очереди и прерывания воспроизведения
   ttsQueue.push({ text, voice, volume });
   processTTSQueue();
 }

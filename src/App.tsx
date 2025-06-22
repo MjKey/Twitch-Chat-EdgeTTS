@@ -10,6 +10,7 @@ interface ChatMessage {
   isTTS: boolean;
   isModerator: boolean;
   isVip: boolean;
+  inQueue?: boolean; // Флаг для отслеживания сообщений в очереди TTS
 }
 
 // Доступные голоса
@@ -22,6 +23,7 @@ const VOICE_OPTIONS = [
 const App: React.FC = () => {
   // Состояния
   const [channel, setChannel] = useState<string>('');
+  const [ttsQueue, setTtsQueue] = useState<ChatMessage[]>([]); // Очередь TTS сообщений
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -114,15 +116,12 @@ const App: React.FC = () => {
         // Добавляем сообщение в список
         setMessages(prev => [...prev, { id, username, message, timestamp, isTTS, isModerator, isVip }]);
         
-        // Если сообщение начинается с префикса TTS, озвучиваем его
+        // Если сообщение начинается с префикса TTS
         if (isTTS) {
           // Проверяем разрешения пользователя
           const canUseTTS = 
-            // Если фильтр модераторов включен и пользователь модератор
             (ttsOnlyModeratorsRef.current && isModerator) || 
-            // ИЛИ если VIP разрешены и пользователь VIP
             (ttsOnlyModeratorsRef.current && ttsVipAllowedRef.current && isVip) ||
-            // ИЛИ если фильтр модераторов выключен (разрешено всем)
             !ttsOnlyModeratorsRef.current;
           
           if (!canUseTTS) {
@@ -135,10 +134,13 @@ const App: React.FC = () => {
             // Выбираем голос
             let voice = selectedVoiceRef.current;
             if (voice === 'random') {
-              // Если выбран "random", выбираем только между реальными голосами (первые два элемента массива)
-              const realVoices = VOICE_OPTIONS.slice(0, 2); // Берем только первые два голоса (без опции "random")
+              const realVoices = VOICE_OPTIONS.slice(0, 2);
               voice = realVoices[Math.floor(Math.random() * realVoices.length)].value;
             }
+            
+            // Добавляем сообщение в очередь TTS
+            const ttsMessage = { id, username, message, timestamp, isTTS, isModerator, isVip, inQueue: true };
+            setTtsQueue(prev => [...prev, ttsMessage]);
             
             console.log(`Отправка сообщения TTS от ${username}${isModerator ? ' (модератор)' : ''}${isVip ? ' (VIP)' : ''} с голосом ${voice} и громкостью ${ttsVolumeRef.current}`);
             window.electronAPI.speakText(textToSpeak, voice, ttsVolumeRef.current);
@@ -199,6 +201,15 @@ const App: React.FC = () => {
     let lastProcessedUrl: string | null = null;
     
     console.log('Настройка обработчиков аудио');
+
+    // Обработчик окончания воспроизведения для обновления очереди
+    const handleAudioEnded = () => {
+      setTtsQueue(prev => {
+        const newQueue = [...prev];
+        newQueue.shift(); // Удаляем первое сообщение из очереди
+        return newQueue;
+      });
+    };
     
     // Подписываемся на события и сохраняем функции отписки
     const unsubscribePlayAudio = window.electronAPI.onPlayAudio((file) => {
@@ -242,6 +253,8 @@ const App: React.FC = () => {
           // Сбрасываем lastProcessedUrl только если это было последнее аудио
           lastProcessedUrl = null;
         }
+        // Обновляем очередь после завершения воспроизведения
+        handleAudioEnded();
       };
       
       // Обработчик ошибки воспроизведения
@@ -373,8 +386,44 @@ const App: React.FC = () => {
     window.electronAPI.speakText(`Тест громкости ${ttsVolume} процентов, голос ${voiceName}`, voice, ttsVolume);
   };
   
+  // Добавляем стили для индикатора очереди и бейджа
+  const styles = `
+    .tts-queue-indicator {
+      background: rgba(100, 65, 164, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .tts-queue-indicator h3 {
+      margin: 0 0 10px 0;
+      color: #6441A4;
+    }
+
+    .tts-queue-list {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .tts-queue-item {
+      padding: 5px;
+      border-bottom: 1px solid rgba(100, 65, 164, 0.2);
+      font-size: 0.9em;
+    }
+
+    .queue-badge {
+      background: #6441A4;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8em;
+      margin-left: 8px;
+    }
+  `;
+
   return (
     <div className="container">
+      <style>{styles}</style>
       <div className="header">
         <h1>Twitch Chat TTS</h1>
       </div>
@@ -479,15 +528,32 @@ const App: React.FC = () => {
             {isConnected ? `Подключено к каналу: ${channel}` : 'Не подключено'}
           </div>
           
-          <div className="chat-container">
-            {messages.map(msg => (
-              <div key={msg.id} className={`chat-message${msg.isTTS ? ' tts-message' : ''}`}>
-                <span className="username">{msg.username}:</span>
-                <span className="content">{msg.message}</span>
+          <>
+            {/* Индикатор очереди TTS */}
+            {ttsQueue.length > 0 && (
+              <div className="tts-queue-indicator">
+                <h3>Очередь TTS ({ttsQueue.length})</h3>
+                <div className="tts-queue-list">
+                  {ttsQueue.map((msg, index) => (
+                    <div key={msg.id} className="tts-queue-item">
+                      {index + 1}. {msg.username}: {msg.message}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+            )}
+            
+            <div className="chat-container">
+              {messages.map(msg => (
+                <div key={msg.id} className={`chat-message${msg.isTTS ? ' tts-message' : ''}`}>
+                  <span className="username">{msg.username}:</span>
+                  <span className="content">{msg.message}</span>
+                  {msg.inQueue && <span className="queue-badge">В очереди</span>}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </>
         </>
       )}
     </div>
